@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: salud-mental
+  namespace: salud-mental
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: salud-mental
+
+  template:
+    metadata:
+      labels:
+        app: salud-mental
+
+    spec:
+      containers:
+        - name: servidor
+          image: hashicorp/http-echo:1.0
+          args:
+            - "-listen=:8080"
+            - "-text=Respuesta desde Salud Mental"
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prescripcion
+  namespace: prescripcion
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: prescripcion
+
+  template:
+    metadata:
+      labels:
+        app: prescripcion
+
+    spec:
+      containers:
+        - name: servidor
+          image: hashicorp/http-echo:1.0
+          args:
+            - "-listen=:8080"
+            - "-text=Respuesta desde Prescripcion Digital"
+          ports:
+            - containerPort: 8080

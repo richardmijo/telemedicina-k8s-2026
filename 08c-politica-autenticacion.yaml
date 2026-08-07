@@ -1,0 +1,56 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: permitir-egreso-autenticacion
+  namespace: salud-mental
+
+spec:
+  podSelector:
+    matchLabels:
+      origen: salud-mental
+
+  policyTypes:
+    - Egress
+
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              modulo: autenticacion
+
+          podSelector:
+            matchLabels:
+              app: autenticacion
+
+      ports:
+        - protocol: TCP
+          port: 8080
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: permitir-ingreso-salud-mental
+  namespace: autenticacion
+
+spec:
+  podSelector:
+    matchLabels:
+      app: autenticacion
+
+  policyTypes:
+    - Ingress
+
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              modulo: salud-mental
+
+          podSelector:
+            matchLabels:
+              origen: salud-mental
+
+      ports:
+        - protocol: TCP
+          port: 8080

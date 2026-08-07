@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cliente
+  namespace: salud-mental
+  labels:
+    tipo: cliente-prueba
+    origen: salud-mental
+spec:
+  containers:
+    - name: cliente
+      image: curlimages/curl
+      command:
+        - sleep
+        - "3600"
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cliente
+  namespace: prescripcion
+  labels:
+    tipo: cliente-prueba
+    origen: prescripcion
+spec:
+  containers:
+    - name: cliente
+      image: curlimages/curl
+      command:
+        - sleep
+        - "3600"
