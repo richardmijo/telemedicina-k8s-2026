@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: egress-salud-mental-a-notificaciones
+  namespace: salud-mental
+spec:
+  podSelector:
+    matchLabels:
+      app: salud-mental
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: notificaciones
+      ports:
+        - protocol: TCP
+          port: 80
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ingress-notificaciones-desde-salud-mental
+  namespace: notificaciones
+spec:
+  podSelector:
+    matchLabels:
+      app: notificaciones
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: salud-mental
+      ports:
+        - protocol: TCP
+          port: 80
