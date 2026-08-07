@@ -1,0 +1,56 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: permitir-egreso-gateway-emergencia
+  namespace: emergencia
+
+spec:
+  podSelector:
+    matchLabels:
+      rol: medico-guardia
+
+  policyTypes:
+    - Egress
+
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              modulo: salud-mental
+
+          podSelector:
+            matchLabels:
+              app: emergencia-gateway
+
+      ports:
+        - protocol: TCP
+          port: 8080
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: permitir-ingreso-medico-guardia
+  namespace: salud-mental
+
+spec:
+  podSelector:
+    matchLabels:
+      app: emergencia-gateway
+
+  policyTypes:
+    - Ingress
+
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              modulo: emergencia
+
+          podSelector:
+            matchLabels:
+              rol: medico-guardia
+
+      ports:
+        - protocol: TCP
+          port: 8080

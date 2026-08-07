@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emergencia-gateway
+  namespace: salud-mental
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: emergencia-gateway
+
+  template:
+    metadata:
+      labels:
+        app: emergencia-gateway
+        rol: punto-entrada-emergencia
+
+    spec:
+      containers:
+        - name: servidor
+          image: hashicorp/http-echo:1.0
+          args:
+            - "-listen=:8080"
+            - "-text=Acceso de emergencia autorizado - Gateway Salud Mental"
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: emergencia-gateway
+  namespace: salud-mental
+spec:
+  selector:
+    app: emergencia-gateway
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
